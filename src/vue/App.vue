@@ -10,9 +10,9 @@
     <div class="container d-flex justify-content-center my-4">
       <input id="searchText" v-model="searchText" @change="searchText_change" />
     </div>
-    <div class="info">
+    <div class="info my-2">
       <div class="container d-flex justify-content-center align-items-center">
-        <h6 class="text m-0" v-if="!isLoading && data.length">-{{ data.length }}-</h6>
+        <h6 class="text m-0" :style="{ visibility: !isLoading && data.length ? '' : 'hidden' }">-{{ data.length }}-</h6>
         <div class="loading" v-if="isLoading">
           <div class="lds-ellipsis">
             <div></div>
@@ -121,7 +121,7 @@ export default {
           .photos(keyword, this.currentPage + 1, 30)
           .then(toJson)
           .then((json) => {
-            console.log(json);
+            //console.log(json);
             this.isLoading = false;
             //this.total = Math.min(json.total, 30 * 9);
             //this.totalPages = Math.min(json.total_pages, 9);
@@ -294,16 +294,20 @@ body {
 .info {
   position: sticky;
   top: 29px;
-  top: 35px;
+  top: 32px;
   z-index: 1300;
   color: #c66;
   pointer-events: none;
   .text {
-    position: absolute;
+    position: relative;
+    display: block;
   }
   .loading {
     position: absolute;
-    transform: scale(0.5);
+    display: block;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
     .lds-ellipsis {
       position: relative;
       display: block;
