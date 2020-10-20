@@ -10,7 +10,7 @@
     <div class="container d-flex justify-content-center my-4">
       <input id="searchText" v-model="searchText" @change="searchText_change" />
     </div>
-    <div class="info my-4">
+    <div class="info">
       <div class="container d-flex justify-content-center align-items-center">
         <h6 class="text m-0" v-if="!isLoading && data.length">-{{ data.length }}-</h6>
         <div class="loading" v-if="isLoading">
@@ -24,7 +24,7 @@
       </div>
     </div>
 
-    <div class="wrap">
+    <div class="wrap mt-4">
       <div class="container d-flex justify-content-center">
         <div class="itemList">
           <div class="items" v-for="(list, key) in itemList" :key="key" :style="{ width: `${100 / itemList.length}%` }">
