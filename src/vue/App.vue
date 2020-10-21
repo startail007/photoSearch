@@ -29,29 +29,28 @@
         <div class="itemList">
           <div class="items" v-for="(list, key) in itemList" :key="key" :style="{ width: `${100 / itemList.length}%` }">
             <div class="item" v-for="(num, key) in list" :key="key + '_' + data[num].id">
-              <a
+              <div
                 class="photoFrame"
                 :style="{
                   paddingBottom: `${100 * (data[num].img.height / data[num].img.width)}%`,
                 }"
-                :href="data[num].img.linksHtml"
-                target="_blank"
               >
-                <div
+                <a
                   class="photo"
                   :style="{
                     backgroundImage: `url(${data[num].img.previewSrc})`,
                   }"
-                ></div>
-                <!-- <img class="w-100" :src="data[num].imgSrc" /> -->
-              </a>
-              <a class="name" :href="data[num].user.linksHtml" target="_blank">
-                <div class="nameBg" :style="{ backgroundColor: data[num].color }"></div>
-                <div class="text">
-                  <div class="icon" :style="{ backgroundImage: `url(${data[num].user.profileImage})` }"></div>
-                  {{ data[num].user.firstName }} {{ data[num].user.lastName }}
-                </div>
-              </a>
+                  :href="data[num].img.linksHtml"
+                  target="_blank"
+                ></a>
+                <a class="name" :href="data[num].user.linksHtml" target="_blank">
+                  <div class="nameBg" :style="{ backgroundColor: data[num].color }"></div>
+                  <div class="text">
+                    <div class="icon" :style="{ backgroundImage: `url(${data[num].user.profileImage})` }"></div>
+                    {{ data[num].user.firstName }} {{ data[num].user.lastName }}
+                  </div>
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -78,6 +77,7 @@ export default {
       itemIndex: 0,
       isUpdatePhoto: false,
       scrollTarget: null,
+      itemCount: 0,
     };
   },
   components: {},
@@ -85,19 +85,53 @@ export default {
     //console.log(Unsplash);
     this.unsplash = new Unsplash({ accessKey: "6AHQScSb6_kYTHsNquGOwneVBRSo_Nc53gq-9-NI6OA", timeout: 500 });
     this.scrollTarget = document.getElementById("scroll");
-    const scroll = () => {
-      this.scroll();
-    };
-    window.addEventListener("resize", () => {
-      this.scroll();
-    });
+    window.addEventListener("resize", this.resize);
     if (this.scrollTarget == document.body) {
-      this.scrollTarget.onscroll = scroll;
+      this.scrollTarget.onscroll = this.scroll;
     } else {
-      this.scrollTarget.addEventListener("scroll", scroll);
+      this.scrollTarget.addEventListener("scroll", this.scroll);
     }
+    this.resize();
+  },
+  watch: {
+    itemCount(val) {
+      this.itemListHeight = Array.from({ length: val }, () => 0);
+      this.itemList = Array.from({ length: val }, () => []);
+      for (let i = 0; i < this.itemIndex; i++) {
+        let num = Infinity;
+        let index = -1;
+        for (let j = 0; j < this.itemListHeight.length; j++) {
+          if (this.itemListHeight[j] < num) {
+            num = this.itemListHeight[j];
+            index = j;
+          }
+        }
+        const el = this.data[i];
+        this.itemListHeight[index] += el.img.height / el.img.width;
+        this.itemList[index].push(i);
+      }
+    },
   },
   methods: {
+    resize() {
+      const w = this.scrollTarget.offsetWidth;
+      let itemCount = 6;
+      if (w >= 1200) {
+      } else if (w >= 992) {
+        itemCount = 5;
+      } else if (w >= 768) {
+        itemCount = 4;
+      } else if (w >= 576) {
+        itemCount = 3;
+      } else {
+        itemCount = 2;
+      }
+      if (this.itemCount != itemCount) {
+        this.itemCount = itemCount;
+      }
+
+      this.scroll();
+    },
     scroll() {
       if (!this.isLoading) {
         const target = this.scrollTarget == document.body ? document.documentElement : this.scrollTarget;
@@ -157,8 +191,8 @@ export default {
     },
     searchText_change(ev) {
       this.data = [];
-      this.itemListHeight = [0, 0, 0, 0];
-      this.itemList = [[], [], [], []];
+      this.itemListHeight = Array.from({ length: this.itemCount }, () => 0);
+      this.itemList = Array.from({ length: this.itemCount }, () => []);
       this.itemIndex = 0;
       this.isLoading = false;
       this.isUpdatePhoto = false;
@@ -373,9 +407,12 @@ body {
       .name {
         position: absolute;
         display: block;
-        left: 0.25rem;
+        /*left: 0.25rem;
         right: 0.25rem;
-        bottom: 0.25rem;
+        bottom: 0.25rem;*/
+        width: 100%;
+        left: 0;
+        bottom: 0;
         .nameBg {
           position: absolute;
           display: block;
