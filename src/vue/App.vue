@@ -1,5 +1,5 @@
 <template>
-  <div id="scroll">
+  <div>
     <header class="sticky-top">
       <div class="navbar navbar-expand-md navbar-dark shadow" id="navbar">
         <div class="container">
@@ -121,7 +121,7 @@ export default {
           .photos(keyword, this.currentPage + 1, 30)
           .then(toJson)
           .then((json) => {
-            //console.log(json);
+            console.log(json);
             this.isLoading = false;
             //this.total = Math.min(json.total, 30 * 9);
             //this.totalPages = Math.min(json.total_pages, 9);
@@ -196,6 +196,13 @@ export default {
 <style lang="scss">
 body {
   margin: 0;
+}
+#scroll {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden auto;
 }
 .lds-ellipsis {
   display: inline-block;
@@ -278,19 +285,11 @@ body {
   font-size: 1.5rem;
   padding: 0.25rem 0.5rem;
 }
-
 /*.sticky-top {
   position: sticky;
   top: 0px;
   z-index: 999;
 }*/
-#scroll {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 100vh;
-  overflow: hidden auto;
-}
 .info {
   position: sticky;
   top: 29px;
