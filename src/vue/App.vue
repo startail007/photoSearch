@@ -8,7 +8,7 @@
       </div>
     </header>
     <div class="container d-flex justify-content-center my-4">
-      <input id="searchText" v-model="searchText" @change="searchText_change" />
+      <input id="searchText" v-model="searchText" @change="searchText_change" placeholder="輸入搜尋圖片關鍵字" />
     </div>
     <div class="info my-2">
       <div class="container d-flex justify-content-center align-items-center">
@@ -166,6 +166,7 @@ export default {
       if (this.searchText !== "") {
         this.search(this.searchText);
       }
+      ev.currentTarget.blur();
     },
     updatePhoto() {
       this.isUpdatePhoto = true;
